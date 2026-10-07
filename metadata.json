@@ -1,0 +1,6 @@
+{
+  "name": "NEXORA",
+  "description": "Gamified personal productivity platform - Turn Your Time Into Progress.",
+  "requestFramePermissions": ["notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile document storing gamification stats and preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "avatar": { "type": "string", "maxLength": 200 },
+        "level": { "type": "number" },
+        "totalXP": { "type": "number" },
+        "currentStreak": { "type": "number" },
+        "longestStreak": { "type": "number" },
+        "lastActiveDate": { "type": "string", "maxLength": 20 },
+        "dailyTarget": { "type": "number" },
+        "onboardingCompleted": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["uid", "email"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A gamified task entity created and tracked by a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "difficulty": { "type": "string", "enum": ["Easy", "Medium", "Hard", "Epic"] },
+        "baseXP": { "type": "number" },
+        "earnedXP": { "type": "number" },
+        "estimatedDuration": { "type": "number" },
+        "actualDuration": { "type": "number" },
+        "completed": { "type": "boolean" },
+        "completedAt": { "type": "string", "maxLength": 50 },
+        "dueDate": { "type": "string", "maxLength": 50 },
+        "recurring": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "title", "difficulty"]
+    },
+    "Goal": {
+      "title": "Goal",
+      "description": "Longer term objective linking tasks and tracking progress",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "deadline": { "type": "string", "maxLength": 50 },
+        "progress": { "type": "number" },
+        "status": { "type": "string", "enum": ["in_progress", "completed", "paused"] },
+        "targetValue": { "type": "number" },
+        "currentValue": { "type": "number" },
+        "unit": { "type": "string", "maxLength": 30 },
+        "createdAt": { "type": "string", "maxLength": 50 },
+        "updatedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "title"]
+    },
+    "Achievement": {
+      "title": "Achievement",
+      "description": "Unlocked badge celebrating a gamified milestone",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "badgeId": { "type": "string", "maxLength": 100 },
+        "title": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 250 },
+        "xpReward": { "type": "number" },
+        "icon": { "type": "string", "maxLength": 50 },
+        "unlockedAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "badgeId", "title"]
+    },
+    "DailyStatistic": {
+      "title": "DailyStatistic",
+      "description": "Aggregated daily metrics for progress charts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 20 },
+        "xpEarned": { "type": "number" },
+        "tasksCompleted": { "type": "number" },
+        "focusMinutes": { "type": "number" },
+        "streakCount": { "type": "number" }
+      },
+      "required": ["userId", "date"]
+    },
+    "NotificationRecord": {
+      "title": "NotificationRecord",
+      "description": "In-app or scheduled push notification entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "message": { "type": "string", "maxLength": 500 },
+        "type": { "type": "string", "maxLength": 50 },
+        "read": { "type": "boolean" },
+        "scheduledFor": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["userId", "title"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Core user profile document accessible strictly by the authenticated user"
+    },
+    "/users/{userId}/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Task items owned exclusively by the user"
+    },
+    "/users/{userId}/goals/{goalId}": {
+      "schema": "Goal",
+      "description": "Goal items owned exclusively by the user"
+    },
+    "/users/{userId}/achievements/{achievementId}": {
+      "schema": "Achievement",
+      "description": "Gamification achievements unlocked by the user"
+    },
+    "/users/{userId}/statistics/{statId}": {
+      "schema": "DailyStatistic",
+      "description": "Daily productivity statistics aggregated for charts"
+    },
+    "/users/{userId}/notifications/{notificationId}": {
+      "schema": "NotificationRecord",
+      "description": "User notification preferences and dispatched reminders"
+    }
+  }
+}
